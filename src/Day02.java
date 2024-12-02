@@ -1,30 +1,43 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import aoc.Day;
+
 import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("unused")
-public class Puzzle4 {
+public class Day02 extends Day {
 
-    public long solve() {
-        try (var lines = Files.lines(Paths.get("./data/day2.txt"))) {
-            return lines.filter(this::isSafe).count();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Override
+    protected Long partOne(List<String> input) {
+        long safeCount = 0;
 
-    private boolean isSafe(String text) {
-        int[] levels = Arrays.stream(text.split(" ")).mapToInt(Integer::parseInt).toArray();
+        for (var line : input) {
+            int[] levels = Arrays.stream(line.split(" ")).mapToInt(Integer::parseInt).toArray();
 
-        for (int i = 0; i < levels.length; i++) {
-            int[] dampened = dampen(levels, i);
-            if (isSafe(dampened)) {
-                return true;
+            if (isSafe(levels)) {
+                ++safeCount;
             }
         }
 
-        return false;
+        return safeCount;
+    }
+
+    @Override
+    protected Long partTwo(List<String> input) {
+        long safeCount = 0;
+
+        for (var line : input) {
+            int[] levels = Arrays.stream(line.split(" ")).mapToInt(Integer::parseInt).toArray();
+
+            for (int i = 0; i < levels.length; i++) {
+                int[] dampened = dampen(levels, i);
+                if (isSafe(dampened)) {
+                    ++safeCount;
+                    break;
+                }
+            }
+        }
+
+        return safeCount;
     }
 
     private boolean isSafe(int[] levels) {
