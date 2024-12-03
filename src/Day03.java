@@ -29,7 +29,6 @@ public class Day03 extends Day {
         long result = 0;
 
         while (matcher.find()) {
-            System.out.println(matcher.group(0));
             if (matcher.group(0).equals("do()")) {
                 enabled = true;
             } else if (matcher.group(0).equals("don't()")) {
