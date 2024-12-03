@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final boolean RUN_ALL = true;
+    private static final boolean RUN_ALL = false;
 
     public static void main(String[] args) throws ClassNotFoundException {
         if (RUN_ALL) {
