@@ -13,4 +13,13 @@ public enum Direction {
         this.drow = drow;
         this.dcol = dcol;
     }
+
+    public Direction turnClockwise() {
+        return switch (this) {
+            case UP -> RT;
+            case RT -> DN;
+            case DN -> LT;
+            case LT -> UP;
+        };
+    }
 }

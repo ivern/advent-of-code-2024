@@ -10,4 +10,8 @@ public record Coordinate(int row, int col) {
         return new Coordinate(row + direction.drow * distance, col + direction.dcol * distance);
     }
 
+    public boolean isIn(char[][] map) {
+        return row >= 0 && row < map.length && col >= 0 && col < map[0].length;
+    }
+
 }
