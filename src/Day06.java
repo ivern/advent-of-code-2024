@@ -34,10 +34,8 @@ public class Day06 extends Day {
 
     @Override
     protected Long partTwo(List<String> input) {
-        var map = DenseGrid.fromInput(input).get(0);
-
-        return map.mapReduce((grid, row, col) -> {
-            if (grid.get(row, col) != '.') {
+        return DenseGrid.fromInput(input).get(0).mapReduce((map, row, col) -> {
+            if (map.get(row, col) != '.') {
                 return 0L;
             }
 
