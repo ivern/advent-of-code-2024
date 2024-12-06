@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class DenseGrid<T> {
 
@@ -86,12 +87,36 @@ public class DenseGrid<T> {
         return oldValue;
     }
 
+    public T put(Coordinate coordinate, T value) {
+        return put(coordinate.row(), coordinate.col(), value);
+    }
+
     public T get(int row, int col) {
         return grid[row][col];
     }
 
+    public T get (Coordinate coordinate) {
+        return get(coordinate.row(), coordinate.col());
+    }
+
     public boolean contains(int row, int col) {
         return col >= 0 && col < numCols && row >= 0 && row < numRows;
+    }
+
+    public boolean contains(Coordinate coordinate) {
+        return contains(coordinate.row(), coordinate.col());
+    }
+
+    public Coordinate find(Predicate<T> predicate) {
+        for (int row = 0; row < numRows; ++row) {
+            for (int col = 0; col < numCols; ++col) {
+                if (predicate.test(grid[row][col])) {
+                    return new Coordinate(row, col);
+                }
+            }
+        }
+
+        return null;
     }
 
     public DenseGrid<T> transpose() {

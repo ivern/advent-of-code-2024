@@ -1,5 +1,6 @@
 import aoc.Day;
 import util.Coordinate;
+import util.DenseGrid;
 import util.Direction;
 
 import java.util.HashSet;
@@ -13,20 +14,19 @@ public class Day06 extends Day {
 
     @Override
     protected Long partOne(List<String> input) {
-        var map = toMap(input);
-        var guard = findGuard(map);
+        var map = DenseGrid.fromInput(input).get(0);
+        var guardPosition = map.find(this::isGuard);
+        var guard = new Guard(guardPosition, getDirection(map.get(guardPosition)));
         var seen = new HashSet<Coordinate>();
 
-        while (guard.coordinate().isIn(map)) {
+        while (map.contains(guard.coordinate())) {
             seen.add(guard.coordinate());
 
             var nextPosition = guard.coordinate().move(guard.direction());
 
-            if (nextPosition.isIn(map) && map[nextPosition.row()][nextPosition.col()] == '#') {
-                guard = new Guard(guard.coordinate(), guard.direction().turnClockwise());
-            } else {
-                guard = new Guard(guard.coordinate().move(guard.direction()), guard.direction());
-            }
+            guard = (map.contains(nextPosition) && map.get(nextPosition) == '#')
+                    ? new Guard(guard.coordinate(), guard.direction().turnClockwise())
+                    : new Guard(guard.coordinate().move(guard.direction()), guard.direction());
         }
 
         return (long) seen.size();
@@ -34,60 +34,37 @@ public class Day06 extends Day {
 
     @Override
     protected Long partTwo(List<String> input) {
-        var map = toMap(input);
-        long options = 0;
+        var map = DenseGrid.fromInput(input).get(0);
 
-        for (int row = 0; row < map.length; row++) {
-            for (int col = 0; col < map[row].length; col++) {
-                if (map[row][col] == '.') {
-                    map[row][col] = '#';
-
-                    var guard = findGuard(map);
-                    var seen = new HashSet<Guard>();
-
-                    while (guard.coordinate().isIn(map)) {
-                        if (seen.contains(guard)) {
-                            ++options;
-                            break;
-                        } else {
-                            seen.add(guard);
-                        }
-
-                        var nextPosition = guard.coordinate().move(guard.direction());
-
-                        if (nextPosition.isIn(map) && map[nextPosition.row()][nextPosition.col()] == '#') {
-                            guard = new Guard(guard.coordinate(), guard.direction().turnClockwise());
-                        } else {
-                            guard = new Guard(guard.coordinate().move(guard.direction()), guard.direction());
-                        }
-                    }
-
-                    map[row][col] = '.';
-                }
+        return map.mapReduce((grid, row, col) -> {
+            if (grid.get(row, col) != '.') {
+                return 0L;
             }
-        }
 
-        return options;
-    }
+            map.put(row, col, '#');
 
-    private char[][] toMap(List<String> input) {
-        char[][] map = new char[input.size()][];
-        for (int i = 0; i < input.size(); i++) {
-            map[i] = input.get(i).toCharArray();
-        }
-        return map;
-    }
+            var guardPosition = map.find(this::isGuard);
+            var guard = new Guard(guardPosition, getDirection(map.get(guardPosition)));
+            var seen = new HashSet<Guard>();
 
-    private Guard findGuard(char[][] map) {
-        for (int row = 0; row < map.length; row++) {
-            for (int col = 0; col < map[row].length; col++) {
-                if (isGuard(map[row][col])) {
-                    return new Guard(new Coordinate(row, col), getDirection(map[row][col]));
+            while (map.contains(guard.coordinate())) {
+                if (seen.contains(guard)) {
+                    map.put(row, col, '.');
+                    return 1L;
+                } else {
+                    seen.add(guard);
                 }
-            }
-        }
 
-        throw new RuntimeException("Guard not found");
+                var nextPosition = guard.coordinate().move(guard.direction());
+
+                guard = (map.contains(nextPosition) && map.get(nextPosition) == '#')
+                        ? new Guard(guard.coordinate(), guard.direction().turnClockwise())
+                        : new Guard(guard.coordinate().move(guard.direction()), guard.direction());
+            }
+
+            map.put(row, col, '.');
+            return 0L;
+        }, Long::sum, 0L);
     }
 
     private boolean isGuard(char position) {

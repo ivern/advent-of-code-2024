@@ -1,6 +1,7 @@
 package util;
 
 public enum Direction {
+
     UP(-1, 0),
     DN(1, 0),
     RT(0, 1),
@@ -22,4 +23,14 @@ public enum Direction {
             case LT -> UP;
         };
     }
+
+    public Direction turnCounterClockwise() {
+        return switch (this) {
+            case UP -> LT;
+            case LT -> DN;
+            case DN -> RT;
+            case RT -> UP;
+        };
+    }
+
 }
