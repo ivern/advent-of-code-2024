@@ -33,7 +33,7 @@ public class Day07 extends Day {
     }
 
     private boolean isValid(long result, List<Long> operands, boolean canConcatenate) {
-        if (operands.isEmpty()) {
+        if (operands.isEmpty() || operands.getFirst() > result) {
             return false;
         }
 
@@ -42,27 +42,26 @@ public class Day07 extends Day {
         }
 
         var newOperands = new ArrayList<>(operands);
-        var summing = newOperands.get(0) + newOperands.get(1);
-        var multiplying = newOperands.get(0) * newOperands.get(1);
-        var concatenating = Long.parseLong(String.format("%d%d", newOperands.get(0), newOperands.get(1)));
+        var first = newOperands.get(0);
+        var second = newOperands.get(1);
 
         newOperands.removeFirst();
         newOperands.removeFirst();
 
-        newOperands.addFirst(summing);
+        newOperands.addFirst(first + second);
         if (isValid(result, newOperands, canConcatenate)) {
             return true;
         }
         newOperands.removeFirst();
 
-        newOperands.addFirst(multiplying);
+        newOperands.addFirst(first * second);
         if (isValid(result, newOperands, canConcatenate)) {
             return true;
         }
 
         if (canConcatenate) {
             newOperands.removeFirst();
-            newOperands.addFirst(concatenating);
+            newOperands.addFirst(Long.parseLong(String.format("%d%d", first, second)));
             if (isValid(result, newOperands, canConcatenate)) {
                 return true;
             }
