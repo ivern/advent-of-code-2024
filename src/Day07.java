@@ -42,11 +42,8 @@ public class Day07 extends Day {
         }
 
         var newOperands = new ArrayList<>(operands);
-        var first = newOperands.get(0);
-        var second = newOperands.get(1);
-
-        newOperands.removeFirst();
-        newOperands.removeFirst();
+        var first = newOperands.removeFirst();
+        var second = newOperands.removeFirst();
 
         newOperands.addFirst(first + second);
         if (isValid(result, newOperands, canConcatenate)) {
