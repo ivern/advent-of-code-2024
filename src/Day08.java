@@ -44,7 +44,9 @@ public class Day08 extends Day {
             }
 
             for (int i = 0; i < antennas.size(); ++i) {
-                antinodes.add(antennas.get(i));
+                if (keepGoing) {
+                    antinodes.add(antennas.get(i));
+                }
 
                 for (int j = i + 1; j < antennas.size(); ++j) {
                     int dr = antennas.get(i).row() - antennas.get(j).row();
