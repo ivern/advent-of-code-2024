@@ -164,11 +164,11 @@ public class DenseGrid<T> {
             return;
         }
 
-        Deque<Cell> fringe = new LinkedList<>();
-        fringe.addLast(new Cell(row, col));
+        Deque<Coordinate> fringe = new LinkedList<>();
+        fringe.addLast(new Coordinate(row, col));
 
         while (!fringe.isEmpty()) {
-            Cell next = fringe.getFirst();
+            Coordinate next = fringe.getFirst();
             if (boundary.test(this, next.row(), next.col())) {
                 continue;
             }
@@ -178,8 +178,12 @@ public class DenseGrid<T> {
         }
     }
 
-    public List<Cell> crossNeighbors(int row, int col) {
-        return mapCrossNeighbors(row, col, (_g, r, c) -> new Cell(r, c));
+    public List<Coordinate> crossNeighbors(int row, int col) {
+        return mapCrossNeighbors(row, col, (_g, r, c) -> new Coordinate(r, c));
+    }
+
+    public List<Coordinate> crossNeighbors(Coordinate coordinate) {
+        return crossNeighbors(coordinate.row(), coordinate.col());
     }
 
     public <U> List<U> mapCrossNeighbors(int row, int col, CellMapper<T, U> mapper) {
@@ -200,8 +204,8 @@ public class DenseGrid<T> {
         return values;
     }
 
-    public List<Cell> allNeighbors(int row, int col) {
-        return mapAllNeighbors(row, col, (_g, r, c) -> new Cell(r, c));
+    public List<Coordinate> allNeighbors(int row, int col) {
+        return mapAllNeighbors(row, col, (_g, r, c) -> new Coordinate(r, c));
     }
 
     public <U> List<U> mapAllNeighbors(int row, int col, CellMapper<T, U> mapper) {
@@ -279,9 +283,6 @@ public class DenseGrid<T> {
     @FunctionalInterface
     public interface CellPredicate<T> {
         boolean test(DenseGrid<T> grid, int row, int col);
-    }
-
-    public record Cell(int row, int col) {
     }
 
 }
