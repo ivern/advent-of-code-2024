@@ -1,6 +1,5 @@
 import aoc.Day;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Day11 extends Day {
     private Long solve(List<String> input, int blinks) {
         var cache = new HashMap<StoneBlinks, Long>();
         return Arrays.stream(input.getFirst().split(" "))
-                .map(BigInteger::new)
+                .map(Long::parseLong)
                 .mapToLong(stone -> count(new StoneBlinks(stone, blinks), cache))
                 .sum();
     }
@@ -44,23 +43,23 @@ public class Day11 extends Day {
         return cache.get(stoneBlinks);
     }
 
-    private Stream<BigInteger> evolve(BigInteger stone) {
-        if (stone.equals(BigInteger.ZERO)) {
-            return Stream.of(BigInteger.ONE);
+    private Stream<Long> evolve(Long stone) {
+        if (stone == 0) {
+            return Stream.of(1L);
         }
-
+        
         var digits = stone.toString();
         if (digits.length() % 2 == 0) {
             var middle = digits.length() / 2;
             return Stream.of(
-                    new BigInteger(digits.substring(0, middle)),
-                    new BigInteger(digits.substring(middle)));
+                    Long.parseLong(digits.substring(0, middle)),
+                    Long.parseLong(digits.substring(middle)));
         }
 
-        return Stream.of(stone.multiply(BigInteger.valueOf(2024)));
+        return Stream.of(stone * 2024);
     }
 
-    private record StoneBlinks(BigInteger stone, int blinks) {
+    private record StoneBlinks(Long stone, int blinks) {
     }
 
 }
