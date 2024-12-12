@@ -10,4 +10,13 @@ public record Coordinate(int row, int col) {
         return new Coordinate(row + direction.drow * distance, col + direction.dcol * distance);
     }
 
+    public boolean isAdjacentTo(Coordinate other) {
+        return (row == other.row() && Math.abs(col - other.col) == 1)
+                || (col == other.col() && Math.abs(row - other.row) == 1);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + row + ", " + col + ')';
+    }
 }

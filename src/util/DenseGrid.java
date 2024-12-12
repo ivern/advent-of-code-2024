@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -95,7 +96,7 @@ public class DenseGrid<T> {
         return grid[row][col];
     }
 
-    public T get (Coordinate coordinate) {
+    public T get(Coordinate coordinate) {
         return get(coordinate.row(), coordinate.col());
     }
 
@@ -159,7 +160,7 @@ public class DenseGrid<T> {
         return newGrid;
     }
 
-    public void floodFill(int row, int col, T value, CellPredicate<T> boundary) {
+    public void floodFill(int row, int col, T value, CellPredicate<T> boundary, Consumer<Coordinate> visitor) {
         if (!contains(row, col)) {
             return;
         }
@@ -168,14 +169,20 @@ public class DenseGrid<T> {
         fringe.addLast(new Coordinate(row, col));
 
         while (!fringe.isEmpty()) {
-            Coordinate next = fringe.getFirst();
+            Coordinate next = fringe.removeFirst();
+
             if (boundary.test(this, next.row(), next.col())) {
                 continue;
             }
 
+            visitor.accept(next);
             grid[next.row()][next.col()] = value;
             fringe.addAll(crossNeighbors(next.row(), next.col()));
         }
+    }
+
+    public void floodFill(Coordinate coordinate, T value, CellPredicate<T> boundary, Consumer<Coordinate> visitor) {
+        floodFill(coordinate.row(), coordinate.col(), value, boundary, visitor);
     }
 
     public List<Coordinate> crossNeighbors(int row, int col) {
