@@ -19,23 +19,25 @@ public class Day17 extends Day {
 
     @Override
     protected Long partTwo(List<String> input) {
-        var d = Device.fromInput(input);
-        long min = (long) Math.pow(8, 15);
-        long max = (long) Math.pow(8, 16);
-        long result = -1;
+        return null;
 
-        for (long i = min; i <= max; ++i) {
-            if (d.isQuine(i)) {
-                result = i;
-                break;
-            }
-
-            if ((i % 1_000_000_000) == 0) {
-                System.out.println(i);
-            }
-        }
-
-        return result;
+//        var d = Device.fromInput(input);
+//        long min = (long) Math.pow(8, 15);
+//        long max = (long) Math.pow(8, 16);
+//        long result = -1;
+//
+//        for (long i = min; i <= max; ++i) {
+//            if (d.isQuine(i)) {
+//                result = i;
+//                break;
+//            }
+//
+//            if ((i % 1_000_000_000) == 0) {
+//                System.out.println(i);
+//            }
+//        }
+//
+//        return result;
     }
 
     static class Device {

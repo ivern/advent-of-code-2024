@@ -34,18 +34,19 @@ public class Day13 extends Day {
 
     @Override
     protected Long partTwo(List<String> input) {
-        long minTokens = 0;
-
-        for (int nextMachine = 0; nextMachine < input.size(); nextMachine += 4) {
-            var machine = parseMachine(input, nextMachine, 10000000000000L);
-            var best = minTokens2(machine, 0, 0, 0, 0, new HashMap<>());
-            if (best.first() != -1) {
-                minTokens += best.first() * best.second();
-            }
-            System.out.println(best.first() + " " + best.second());
-        }
-
-        return minTokens;
+        return null;
+//        long minTokens = 0;
+//
+//        for (int nextMachine = 0; nextMachine < input.size(); nextMachine += 4) {
+//            var machine = parseMachine(input, nextMachine, 10000000000000L);
+//            var best = minTokens2(machine, 0, 0, 0, 0, new HashMap<>());
+//            if (best.first() != -1) {
+//                minTokens += best.first() * best.second();
+//            }
+//            System.out.println(best.first() + " " + best.second());
+//        }
+//
+//        return minTokens;
     }
 
     private long minTokens(Machine machine, int x, int y, int amoves, int bmoves, Map<State, Long> cache) {
