@@ -1,88 +1,60 @@
 import aoc.Day;
-import util.Coordinate;
-import util.DenseGrid;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @SuppressWarnings("unused")
-public class Day18 extends Day {
+public class Day19 extends Day {
 
-    private static final int GRID_SIZE = 71;
-    private static final Coordinate EXIT = new Coordinate(GRID_SIZE - 1, GRID_SIZE - 1);
+    private final Map<String, Long> cache = new HashMap<>();
 
     @Override
     protected Long partOne(List<String> input) {
-        var corrupted = new HashSet<Coordinate>();
-        for (var i = 0; i < 1024; i++) {
-            var parts = input.get(i).split(",");
-            corrupted.add(new Coordinate(Integer.parseInt(parts[1]), Integer.parseInt(parts[0])));
+        long count = 0;
+        var patterns = Arrays.stream(input.getFirst().split(",")).map(String::trim).toList();
+
+        for (int i = 2; i < input.size(); i++) {
+            if (countWays(input.get(i), patterns, cache) > 0) {
+                ++count;
+            }
         }
 
-        var map = new DenseGrid<>(Character.class, GRID_SIZE, GRID_SIZE, '.');
-
-        return findPath(map, corrupted);
+        return count;
     }
 
     @Override
     protected Long partTwo(List<String> input) {
-        int min = 0;
-        int max = input.size() - 1;
+        long count = 0;
+        var patterns = Arrays.stream(input.getFirst().split(",")).map(String::trim).toList();
 
-        var map = new DenseGrid<>(Character.class, GRID_SIZE, GRID_SIZE, '.');
-
-        while (true) {
-            if (min >= max - 1) {
-                System.out.println(input.get(min));
-                return (long) min;
-            }
-
-            int stop = min + (max - min) / 2;
-
-            var corrupted = new HashSet<Coordinate>();
-            for (var i = 0; i < stop; i++) {
-                var parts = input.get(i).split(",");
-                corrupted.add(new Coordinate(Integer.parseInt(parts[1]), Integer.parseInt(parts[0])));
-            }
-
-            if (findPath(map, corrupted) == -1) {
-                max = stop;
-            } else {
-                min = stop;
-            }
-        }
-    }
-
-    record Step(Coordinate coordinate, long steps) {
-    }
-
-    private long findPath(DenseGrid<Character> map, Set<Coordinate> corrupted) {
-        var seen = new HashSet<Coordinate>();
-
-        var fringe = new ArrayDeque<Step>();
-        fringe.addLast(new Step(new Coordinate(0, 0), 0));
-
-        while (!fringe.isEmpty()) {
-            var next = fringe.removeFirst();
-
-            if (next.coordinate().equals(EXIT)) {
-                return next.steps();
-            }
-
-            if (seen.contains(next.coordinate()) || corrupted.contains(next.coordinate())) {
-                continue;
-            }
-            seen.add(next.coordinate());
-
-            map.crossNeighbors(next.coordinate()).stream()
-                    .filter(c -> !seen.contains(c))
-                    .filter(c -> !corrupted.contains(c))
-                    .forEach(c -> fringe.addLast(new Step(c, next.steps() + 1)));
+        for (int i = 2; i < input.size(); i++) {
+            count += countWays(input.get(i), patterns, cache);
         }
 
-        return -1L;
+        return count;
+    }
+
+    private long countWays(String design, List<String> patterns, Map<String, Long> cache) {
+        if (design.isEmpty()) {
+            return 1L;
+        }
+
+        if (!cache.containsKey(design)) {
+            long ways = 0;
+
+            for (int i = 0; i < patterns.size(); i++) {
+                var pattern = patterns.get(i);
+                if (design.startsWith(pattern)) {
+                    ways += countWays(design.substring(pattern.length()), patterns, cache);
+                }
+            }
+
+            cache.put(design, ways);
+        }
+
+        return cache.get(design);
     }
 
 }
